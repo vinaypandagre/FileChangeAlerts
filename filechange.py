@@ -21,10 +21,10 @@ def monitor_file_changes(path):
         yield old_state, new_state
         old_state = new_state
 
-def send_notification(url, message):
+def send_notification(message):
     """Send a notification to a URL"""
     try:
-        requests.post(url, data=message.encode('utf-8'))
+        requests.post("https://ntfy.sh/yourtopic", data=message.encode('utf-8')) #replace your topic with any name where you wnat to recieve the notification
     except requests.RequestException as e:
         print(f"Error sending notification: {e}")
 
@@ -47,17 +47,17 @@ def process_file_changes(old_state, new_state):
 
     for file_path in del_file:
         if file_path not in renamed_files:
-            send_notification("https://ntfy.sh/vinay", f"{file_path} file deleted")
+            send_notification(f"{file_path} file deleted")
 
     for file_path in add_file:
         if file_path not in renamed_files.values():
-            send_notification("https://ntfy.sh/vinay", f"{file_path} file added")
+            send_notification(f"{file_path} file added")
 
     for file_path in modified_files:
-        send_notification("https://ntfy.sh/vinay", f"{file_path} file modified")
+        send_notification(f"{file_path} file modified")
 
     for old_path, new_path in renamed_files.items():
-        send_notification("https://ntfy.sh/vinay", f"file {old_path} renamed to {new_path}")
+        send_notification(f"file {old_path} renamed to {new_path}")
 
 if __name__ == "__main__":
     path = "/Users/panda/Desktop/test"
